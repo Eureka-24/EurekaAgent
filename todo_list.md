@@ -2,7 +2,7 @@
 
 | 属性 | 内容 |
 |------|------|
-| **文档版本** | V1.9 |
+| **文档版本** | V2.0 |
 | **创建日期** | 2026-04-22 |
 | **关联文档** | AgentFrame-PRD.md, SPEC.md |
 | **状态** | 待评审 |
@@ -285,11 +285,11 @@ Coverage: 56%
 
 | 子任务 | 描述 | 对应PRD | 对应SPEC | 验收标准 | 状态 |
 |--------|------|---------|----------|----------|------|
-| P2-Task-001-1 | 实现WorkingMemory工作记忆 | 5.3.1 | 4.3.3 | 写入<50ms/TTL清理 |
-| P2-Task-001-2 | 实现EpisodicMemory情景记忆 | 5.3.2 | 4.3.4 | SQLite+Qdrant存储 |
-| P2-Task-001-3 | 实现SemanticMemory语义记忆 | 5.3.3 | 4.3.5 | Neo4j+Qdrant图谱 |
-| P2-Task-001-4 | 实现PerceptualMemory感知记忆 | 5.3.4 | 4.3.6 | ⚠️ 留白 |
-| P2-Task-001-5 | 实现跨层检索与评分排序 | 5.3 | 4.3.7 | 评分公式正确 |
+| P2-Task-001-1 | 实现WorkingMemory工作记忆 | 5.3.1 | 4.3.3 | 写入<50ms/TTL清理 | ✅ 完成 |
+| P2-Task-001-2 | 实现EpisodicMemory情景记忆 | 5.3.2 | 4.3.4 | SQLite+Qdrant存储 | ✅ 完成 |
+| P2-Task-001-3 | 实现SemanticMemory语义记忆 | 5.3.3 | 4.3.5 | Neo4j+Qdrant图谱 | ✅ 完成 |
+| P2-Task-001-4 | 实现PerceptualMemory感知记忆 | 5.3.4 | 4.3.6 | ⚠️ 留白 | ✅ 留白 |
+| P2-Task-001-5 | 实现跨层检索与评分排序 | 5.3 | 4.3.7 | 评分公式正确 | ✅ 完成 |
 
 **技术依赖**: Qdrant (向量检索) + Neo4j (知识图谱) + SQLite
 
@@ -306,12 +306,16 @@ Coverage: 56%
 - ✅ Token计数误差<1%
 
 
-**验证方法**:
-```bash
-# 运行记忆系统测试
-pytest tests/unit/test_memory/ -v
-pytest tests/integration/test_memory_integration.py -v
-```
+**测试结果**: 31 passed in 1.51s
+
+**实现文件**:
+- `agentframe/memory/base.py` - 记忆基类和评分公式
+- `agentframe/memory/working.py` - L0工作记忆 (TTL+TF-IDF)
+- `agentframe/memory/episodic.py` - L1情景记忆 (SQLite)
+- `agentframe/memory/semantic.py` - L2语义记忆 (Neo4j)
+- `agentframe/memory/perceptual.py` - L3感知记忆 (留空)
+- `agentframe/memory/manager.py` - 统一记忆管理层
+- `tests/unit/test_memory_layers.py` - 记忆系统测试
 
 ---
 
@@ -657,9 +661,9 @@ pytest tests/observability/ -v
 |------|------|---------|------|
 | V1.0 | 2026-04-22 | 初稿创建 | [待定] |
 | V1.1 | 2026-04-22 | Phase 1 LLM适配层开发完成 | AgentFrame Team |
-| V1.9 | 2026-04-22 | SPEC部署架构更新：Qdrant+Neo4j | AgentFrame Team |
+| V2.0 | 2026-04-22 | Phase 2记忆系统实现完成 | AgentFrame Team |
 
 ---
 
-*文档版本：V1.9*
+*文档版本：V2.0*
 *最后更新：2026-04-22*

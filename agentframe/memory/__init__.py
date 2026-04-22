@@ -1,17 +1,46 @@
-"""Memory Module - 记忆管理
+"""AgentFrame Memory Module
 
-提供短期记忆、长期记忆、工作记忆和向量记忆功能。
-对应 PRD 13.3 记忆管理 和 SPEC 3.8
+四层记忆系统:
+- L0: WorkingMemory - 工作记忆 (TTL+TF-IDF)
+- L1: EpisodicMemory - 情景记忆 (SQLite+Qdrant)
+- L2: SemanticMemory - 语义记忆 (Neo4j+Qdrant)
+- L3: PerceptualMemory - 感知记忆 (预留)
+
+对应 SPEC 4.3
 """
 
-from agentframe.memory.base import Memory
-from agentframe.memory.short_term import ShortTermMemory
+from agentframe.memory.base import (
+    Memory,
+    MemoryConfig,
+    MemoryItem,
+    MemoryType,
+    MemoryLevel,
+    calculate_working_score,
+    calculate_episodic_score,
+    calculate_semantic_score,
+)
+
 from agentframe.memory.working import WorkingMemory
-from agentframe.memory.vector import VectorMemory
+from agentframe.memory.episodic import EpisodicMemory
+from agentframe.memory.semantic import SemanticMemory
+from agentframe.memory.manager import MemoryManager
+
+# PerceptualMemory 为预留接口，暂不导出
+# from agentframe.memory.perceptual import PerceptualMemory
 
 __all__ = [
+    # Base
     "Memory",
-    "ShortTermMemory", 
+    "MemoryConfig",
+    "MemoryItem",
+    "MemoryType",
+    "MemoryLevel",
+    "calculate_working_score",
+    "calculate_episodic_score",
+    "calculate_semantic_score",
+    # Implementations
     "WorkingMemory",
-    "VectorMemory",
+    "EpisodicMemory",
+    "SemanticMemory",
+    "MemoryManager",
 ]
