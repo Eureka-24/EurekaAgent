@@ -1,0 +1,58 @@
+# AgentFrame Docker Compose 配置
+# 用于启动 Qdrant 和 Neo4j 依赖服务
+
+version: '3.8'
+
+services:
+  # AgentFrame API 服务
+  agentframe-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password
+    depends_on:
+      - qdrant
+      - neo4j
+    volumes:
+      - ./config.env:/app/config.env:ro
+
+  # Qdrant 向量数据库
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"  # gRPC 端口
+      - "6334:6334"  # REST API 端口
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Neo4j 知识图谱数据库
+  neo4j:
+    image: neo4j:5
+    ports:
+      - "7474:7474"  # HTTP 端口
+      - "7687:7687"  # Bolt 端口
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_PLUGINS=["apoc"]
+    volumes:
+      - neo4j_data:/data
+      - ./neo4j/plugins:/plugins
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7474"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  qdrant_data:
+  neo4j_data:
